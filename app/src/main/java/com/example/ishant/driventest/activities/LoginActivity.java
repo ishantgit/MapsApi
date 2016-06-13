@@ -13,6 +13,7 @@ import com.example.ishant.driventest.utils.SharedPreferenceUtils;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -21,6 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.Date;
 
 
 public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -37,30 +40,23 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         setContentView(R.layout.activity_login);
         toolbar = setUpToolbar("LOGIN");
         sharedPreferenceUtils = SharedPreferenceUtils.getInstance();
-        if(sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_FACEBOOK,null) == null){
+        if(sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_FACEBOOK,null) != null){
+            String expiryDate = sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_EXPIRY_DATE,"");
+            Date date = new Date();
+            String currentDate = date.toString();
+
+            if(expiryDate == currentDate){
+                LoginManager.getInstance().logOut();
+            }else{
+                goToLocationActivity();
+            }
+        }
+        if(sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_GOOGLE,null) != null){
             goToLocationActivity();
         }
-        if(!checkLoggedInByGoogle()){
-            goToLocationActivity();
-        }
+
         setUpGoogleSignIn();
         setUpFacebookLogin();
-    }
-
-    Boolean checkLoggedInByFacebook(){
-        String accessToken = sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_FACEBOOK,"");
-        if(accessToken.isEmpty()){
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkLoggedInByGoogle(){
-        if(sharedPreferenceUtils.retrieveStringValue(SharedPreferenceUtils.ACCESS_TOKEN_GOOGLE,null)!=null){
-            return false;
-        }else{
-            return true;
-        }
     }
 
     private void goToLocationActivity(){
@@ -78,6 +74,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 sharedPreferenceUtils.storeStringValue(SharedPreferenceUtils.ACCESS_TOKEN_FACEBOOK,loginResult.getAccessToken().getToken());
+                sharedPreferenceUtils.storeStringValue(SharedPreferenceUtils.ACCESS_TOKEN_EXPIRY_DATE,loginResult.getAccessToken().getExpires().toString());
                 goToLocationActivity();
             }
 

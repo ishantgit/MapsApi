@@ -7,4 +7,5 @@ public class IntentConstants {
     //Requests code
 
     public static final int GOOGLE_SIGN_REQUEST_CODE = 202;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 302;
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.ishant.driventest.MyApplication;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -14,6 +15,7 @@ public class SharedPreferenceUtils {
     //shared preferences keys
     public static final String DRIVEN_TEST = "driven_test";
     public static final String ACCESS_TOKEN_FACEBOOK = "accessToken";
+    public static final String ACCESS_TOKEN_EXPIRY_DATE = "expiryDate";
     public static final String EMAIL_ID_FACEBOOK = "email";
     public static final String USER_NAME = "userName";
     public static final String ACCESS_TOKEN_GOOGLE = "accessTokenGoogle";
@@ -39,6 +41,11 @@ public class SharedPreferenceUtils {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.apply();
+    }
+
+    public synchronized void storeDateValue(String key, Date value){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
     }
 
     public synchronized String retrieveStringValue(String key, String defaultValue){
