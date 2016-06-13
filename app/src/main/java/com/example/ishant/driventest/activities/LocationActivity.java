@@ -71,13 +71,13 @@ public class LocationActivity extends BaseActivity implements OnMapReadyCallback
 
     }
 
-//    @Override
-//    protected void onPause() {
-//        if (mGoogleApiClient != null) {
-//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-//        }
-//        super.onPause();
-//    }
+    @Override
+    protected void onPause() {
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+        super.onPause();
+    }
 
     @Override
     protected void onStart() {
